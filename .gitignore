@@ -1,0 +1,14 @@
+.venv/
+
+disk.qcow2
+*.qcow2
+
+OVMF_VARS*.fd
+
+*.iso
+
+__pycache__/
+*.pyc
+
+.idea/
+.vscode/
