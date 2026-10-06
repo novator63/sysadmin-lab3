@@ -31,6 +31,8 @@ def main():
     info = {
         "path": path,
         "exists": True,
+        "size_bytes": stat_result.st_size,
+        "mode": format(stat_result.st_mode & 0o7777, "04o"),
     }
 
     module.exit_json(changed=False, file_info=info)
