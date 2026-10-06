@@ -1,4 +1,51 @@
 #!/usr/bin/python
+DOCUMENTATION = r"""
+---
+module: lab_file_info
+short_description: Read file metadata
+description:
+  - Returns file existence, size and permissions.
+  - Follows symbolic links and does not modify files.
+options:
+  path:
+    description:
+      - Path to inspect on the managed host.
+    type: path
+    required: true
+author:
+  - Pachkalov
+"""
+
+EXAMPLES = r"""
+- name: Inspect nginx configuration
+  lab_file_info:
+    path: /etc/nginx/nginx.conf
+  register: nginx_config
+"""
+
+RETURN = r"""
+file_info:
+  description: Metadata of the requested path.
+  returned: success
+  type: dict
+  contains:
+    path:
+      description: Requested path.
+      type: str
+      returned: always
+    exists:
+      description: Whether the target exists.
+      type: bool
+      returned: always
+    size_bytes:
+      description: File size in bytes.
+      type: int
+      returned: when the target exists
+    mode:
+      description: Permissions in octal notation.
+      type: str
+      returned: when the target exists
+"""
 
 import os
 
