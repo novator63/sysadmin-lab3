@@ -1,0 +1,39 @@
+---
+- name: Demonstrate custom Ansible modules
+  hosts: debian-servers
+  remote_user: ansible
+  gather_facts: false
+
+  tasks:
+    - name: Read nginx configuration metadata
+      lab_file_info:
+        path: /etc/nginx/nginx.conf
+      register: nginx_config
+
+    - name: Display file information
+      ansible.builtin.debug:
+        var: nginx_config.file_info
+
+    - name: Gather custom host facts
+      lab_host_facts:
+
+    - name: Display custom facts
+      ansible.builtin.debug:
+        var: ansible_facts['lab_host']
+
+    - name: Verify collected information
+      ansible.builtin.assert:
+        that:
+          - nginx_config.file_info.exists
+          - nginx_config.file_info.size_bytes | default(0) | int > 0
+          - ansible_facts['lab_host']['hostname'] | length > 0
+          - ansible_facts['lab_host']['system'] == 'Linux'
+        success_msg: Both custom modules returned valid data
+
+    - name: Use collected information in a message
+      ansible.builtin.debug:
+        msg: >-
+          Host {{ ansible_facts['lab_host']['hostname'] }}
+          runs {{ ansible_facts['lab_host']['system'] }}.
+          NGINX configuration size:
+          {{ nginx_config.file_info.size_bytes }} bytes.
